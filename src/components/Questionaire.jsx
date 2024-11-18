@@ -375,7 +375,7 @@ const Questionaire = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="px-4 py-2 bg-green-500 text-white rounded mt-4"
+                className="px-4 py-2 bg-secondary text-white rounded mt-4"
               >
                 Submit
               </button>
@@ -383,7 +383,7 @@ const Questionaire = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-4 py-2 bg-blue-500 text-white"
+                className="px-4 py-2 bg-secondary text-white"
               >
                 Next
               </button>
