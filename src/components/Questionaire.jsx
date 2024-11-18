@@ -143,9 +143,16 @@ const Questionaire = () => {
     }));
   };
 
-  const handleStart = () => {
-    setIsStartPage(false);
-  };
+ const handleStart = () => {
+   const { name, email, age, sex } = userInfo;
+
+   // Validate required fields
+   if (!name || !email || !age || !sex) {
+     alert("Please fill out all required fields to continue.");
+     return;
+   }
+   setIsStartPage(false);
+ };
 
   const handleOptionChange = (event) => {
     const selectedOption = event.target.value;
@@ -168,9 +175,7 @@ const Questionaire = () => {
         } else {
           return {
             ...prevAnswers,
-            [currentQuestionIndex]: selectedOptions.filter(
-              (selectedOption) => selectedOption !== option
-            ),
+            [currentQuestionIndex]: selectedOptions.filter((o) => o !== option),
           };
         }
       });
@@ -191,23 +196,35 @@ const Questionaire = () => {
 //   };
 
   const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    const selectedAnswer = userAnswers[currentQuestionIndex];
+    if (
+      !selectedAnswer ||
+      (Array.isArray(selectedAnswer) && selectedAnswer.length === 0)
+    ) {
+      alert("Please select an option before proceeding.");
+      return;
     }
+    if (currentQuestionIndex === 5 && selectedAnswer.length !== 2) {
+      alert("Please select exactly 2 options.");
+      return;
+    }
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
   };
 
-  const handlePrev = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
+ const handlePrev = () => {
+   if (currentQuestionIndex === 0) {
+     setIsStartPage(true); // Go back to the start page
+   } else {
+     setCurrentQuestionIndex(currentQuestionIndex - 1);
+   }
+ };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     const payload = {
       userInfo,
       userAnswers,
     };
-
     try {
       // Simulate API call
       await fetch("", {
@@ -225,9 +242,21 @@ const Questionaire = () => {
 
   const currentQuestion = questions[currentQuestionIndex];
   const selectedOption = userAnswers[currentQuestionIndex] || "";
+  const totalQuestions = questions.length;
+  const progressPercentage = isStartPage
+    ? 0
+    : ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
   return (
     <div className="p-4">
+      <div
+        className="progress-bar rounded-md"
+        style={{
+          width: `${progressPercentage}%`,
+          height: "10px",
+          backgroundColor: "rgb(255 123 34)",
+        }}
+      ></div>
       {isSubmitted ? (
         <section className="border p-4 rounded shadow-lg text-center">
           <h1 className="text-2xl font-bold mb-4 text-[#335eb3]">
@@ -254,6 +283,7 @@ const Questionaire = () => {
                 value={userInfo.name}
                 onChange={handleInputChange}
                 className="border p-2 w-full"
+                required
               />
             </div>
             <div className="mb-4">
@@ -264,6 +294,7 @@ const Questionaire = () => {
                 value={userInfo.email}
                 onChange={handleInputChange}
                 className="border p-2 w-full"
+                required
               />
             </div>
             <div className="mb-4">
@@ -284,7 +315,7 @@ const Questionaire = () => {
                 checked={userInfo.sex === "Male"}
                 onChange={handleInputChange}
                 className="mr-2"
-              />{" "}
+              />
               Male
               <input
                 type="radio"
@@ -335,7 +366,6 @@ const Questionaire = () => {
             <button
               type="button"
               onClick={handlePrev}
-              disabled={currentQuestionIndex === 0}
               className="px-4 py-2 bg-gray-200 mr-2"
             >
               Previous
@@ -353,7 +383,6 @@ const Questionaire = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                disabled={currentQuestionIndex === questions.length - 1}
                 className="px-4 py-2 bg-blue-500 text-white"
               >
                 Next
