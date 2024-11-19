@@ -230,14 +230,14 @@ const Questionaire = () => {
     <div className="p-4">
       {isSubmitted ? (
         <section className="border p-4 rounded shadow-lg text-center">
-          <h1 className="text-2xl font-bold mb-4 text-[#335eb3]">
+          <h1 className="text-2xl font-bold mb-4 text-secondary">
             Thanks for sharing your thoughts! Your feedback will help us design
             something that truly makes a difference in people’s lives. 🌟
           </h1>
         </section>
       ) : isStartPage ? (
         <section className="border p-4 rounded shadow-lg">
-          <h1 className="text-2xl font-bold mb-4 text-[#335eb3]">
+          <h1 className="text-2xl font-bold mb-4 text-secondary">
             Frootify Idea Validation Questionnaire
           </h1>
           <p>
@@ -299,7 +299,7 @@ const Questionaire = () => {
             <button
               type="button"
               onClick={handleStart}
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="px-4 py-2 bg-secondary text-white rounded"
             >
               Start Questionnaire
             </button>
@@ -345,7 +345,7 @@ const Questionaire = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="px-4 py-2 bg-green-500 text-white rounded mt-4"
+                className="px-4 py-2 bg-secondary text-white rounded mt-4"
               >
                 Submit
               </button>
@@ -354,7 +354,7 @@ const Questionaire = () => {
                 type="button"
                 onClick={handleNext}
                 disabled={currentQuestionIndex === questions.length - 1}
-                className="px-4 py-2 bg-blue-500 text-white"
+                className="px-4 py-2 bg-secondary text-white"
               >
                 Next
               </button>
