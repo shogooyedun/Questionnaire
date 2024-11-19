@@ -264,7 +264,7 @@ const Questioniallash = () => {
         ></div>
         {isSubmitted ? (
           <section className="border p-4 rounded shadow-lg text-center">
-            <h1 className="text-2xl font-bold mb-4 text-[#335eb3]">
+            <h1 className="text-2xl font-bold mb-4 text-secondary">
               Thanks for sharing your thoughts! Your feedback will help us
               design something that truly makes a difference in people’s lives.
               🌟
@@ -272,7 +272,7 @@ const Questioniallash = () => {
           </section>
         ) : isStartPage ? (
           <section className="border p-4 rounded shadow-lg">
-            <h1 className="text-2xl font-bold mb-4 text-[#335eb3]">
+            <h1 className="text-2xl font-bold mb-4 text-secondary">
               Frootify Idea Validation Questionnaire
             </h1>
             <p>
@@ -336,7 +336,7 @@ const Questioniallash = () => {
               <button
                 type="button"
                 onClick={handleStart}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
+                className="px-4 py-2 bg-secondary text-white rounded"
               >
                 Start Questionnaire
               </button>
