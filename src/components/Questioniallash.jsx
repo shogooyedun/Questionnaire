@@ -81,7 +81,7 @@ const Questioniallash = () => {
       },
       {
         question:
-          "What would motivate you to use a health-focused app orservice?",
+          "What would motivate you to use a health-focused app or service?",
         paragraph: "choose your top 2:",
         options: [
           "🌟 Staying fit and energetic",
@@ -127,7 +127,7 @@ const Questioniallash = () => {
       },
       {
         question:
-          "If you could describe Frootify in one word, what would it be?",
+          "If you could describe a health technology that makes living health easy, simple and fun, what would it be?",
         paragraph: "pick one",
         options: [
           "🌟 Inspiring",
@@ -138,7 +138,7 @@ const Questioniallash = () => {
         name: "Frootify",
       },
     ];
-
+    
     // Functions to handle user information input
     const handleInputChange = (e) => {
       const { name, value, type, checked } = e.target;
@@ -185,7 +185,6 @@ const Questioniallash = () => {
         }
       });
     };
-
     //   const handleCheckboxChange = (event) => {
     //     const option = event.target.value;
     //     const isChecked = event.target.checked;
@@ -199,23 +198,87 @@ const Questioniallash = () => {
     //       };
     //     });
     //   };
+    
+    const handleTextareaChange = (event) => {
+      const comment = event.target.value;
+      setUserAnswers((prevAnswers) => ({
+        ...prevAnswers,
+        [`comment_${currentQuestionIndex}`]: comment,
+      }));
+    };
+    // const handleNext = () => {
+    //   const selectedAnswer = userAnswers[currentQuestionIndex];
+    //   const comment = userAnswers[`comment_${currentQuestionIndex}`];
+    //   if (
+    //     !selectedAnswer ||
+    //     (Array.isArray(selectedAnswer) && selectedAnswer.length === 0)
+    //   ) {
+    //     alert("Please select an option before proceeding.");
+    //     return;
+    //   }
+    //   if (currentQuestionIndex === 5 && selectedAnswer.length !== 2) {
+    //     alert("Please select exactly 2 options.");
+    //     return;
+    //   }
+    //   // For questions 9 and 10, ensure the comment is filled
+    //   if (currentQuestionIndex === 8 && !comment) {
+    //     alert("Please leave a comment before proceeding.");
+    //     return;
+    //   }
+    //   const currentQuestion = questions[currentQuestionIndex];
+    //   const isLastOptionSelected =
+    //     currentQuestionIndex === 9 &&
+    //     selectedAnswer.includes(
+    //       currentQuestion.options[currentQuestion.options.length - 1]
+    //     ); // Check if the last option is selected
+    //   if (isLastOptionSelected && !comment) {
+    //     alert(
+    //       "Please specify your answer in the comment box before proceeding."
+    //     );
+    //     return;
+    //   }
+    //   setCurrentQuestionIndex(currentQuestionIndex + 1);
+    // };
 
     const handleNext = () => {
       const selectedAnswer = userAnswers[currentQuestionIndex];
-      if (
-        !selectedAnswer ||
-        (Array.isArray(selectedAnswer) && selectedAnswer.length === 0)
-      ) {
+      const comment = userAnswers[`comment_${currentQuestionIndex}`];
+      const currentQuestion = questions[currentQuestionIndex];
+
+      // Helper functions for specific validations
+      const isSelectionValid = () =>
+        selectedAnswer &&
+        (!Array.isArray(selectedAnswer) || selectedAnswer.length > 0);
+      const isTwoOptionsSelected = () =>
+        currentQuestionIndex === 5 && selectedAnswer.length === 2;
+      const isCommentRequired = () =>
+        (currentQuestionIndex === 8 && !comment) ||
+        (currentQuestionIndex === 9 &&
+          selectedAnswer.includes(
+            currentQuestion.options[currentQuestion.options.length - 1]
+          ) &&
+          !comment);
+
+      // Validation checks
+      if (!isSelectionValid()) {
         alert("Please select an option before proceeding.");
         return;
       }
-      if (currentQuestionIndex === 5 && selectedAnswer.length !== 2) {
+      if (currentQuestionIndex === 5 && !isTwoOptionsSelected()) {
         alert("Please select exactly 2 options.");
         return;
       }
+      if (isCommentRequired()) {
+        const alertMessage =
+          currentQuestionIndex === 8
+            ? "Please leave a comment before proceeding."
+            : "Please specify your answer in the comment box before proceeding.";
+        alert(alertMessage);
+        return;
+      }
+      // Proceed to the next question
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     };
-
     const handlePrev = () => {
       if (currentQuestionIndex === 0) {
         setIsStartPage(true); // Go back to the start page
@@ -223,8 +286,23 @@ const Questioniallash = () => {
         setCurrentQuestionIndex(currentQuestionIndex - 1);
       }
     };
-
     const handleSubmit = async () => {
+      const selectedAnswer = userAnswers[currentQuestionIndex];
+      const comment = userAnswers[`comment_${currentQuestionIndex}`];
+      // Check if the user has selected the last option for question 10
+      const currentQuestion = questions[currentQuestionIndex];
+      const isLastOptionSelected =
+        currentQuestionIndex === 9 &&
+        selectedAnswer.includes(
+          currentQuestion.options[currentQuestion.options.length - 1]
+        ); // Check if the last option is selected
+      // Block submission if the last option is selected but the comment is not filled
+      if (isLastOptionSelected && !comment) {
+        alert(
+          "Please specify your answer in the comment box before submitting."
+        );
+        return;
+      }
       setIsSubmitting(true);
       const payload = {
         userInfo,
@@ -247,11 +325,11 @@ const Questioniallash = () => {
 
     const currentQuestion = questions[currentQuestionIndex];
     const selectedOption = userAnswers[currentQuestionIndex] || "";
+    const comment = userAnswers[`comment_${currentQuestionIndex}`] || "";
     const totalQuestions = questions.length;
     const progressPercentage = isStartPage
       ? 0
       : ((currentQuestionIndex + 1) / totalQuestions) * 100;
-
     return (
       <div className="p-4">
         <div
@@ -369,6 +447,18 @@ const Questioniallash = () => {
                   {option}
                 </div>
               ))}
+              {(currentQuestionIndex === 8 || currentQuestionIndex === 9) && ( // Add textarea for questions 9 and 10
+                <div className="mb-4">
+                  <textarea
+                    placeholder="Please leave a comment"
+                    value={comment}
+                    onChange={handleTextareaChange}
+                    className="border p-2 w-full"
+                    required
+                  ></textarea>
+                </div>
+              )}
+
               <button
                 type="button"
                 onClick={handlePrev}
